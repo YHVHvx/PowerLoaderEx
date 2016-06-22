@@ -3,7 +3,7 @@
 * More Info: http://goo.gl/3CdZHw
 
 # Original PowerLoader
-* Known since ~2013
+* Known since ~2009 (from wasm.ru, virustech.org). Method author: Indy(Clerk).
 * Loader used in many different dropper families (Gapz / Redyms / Carberp / Vabushky ...)
 * First injection technique via Return Oriented Programming technique (ROP).
 * “explorer.exe” is injected using Shell_TrayWnd / NtQueueApcThread (32bit / 64bit)
